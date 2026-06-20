@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from engine.database import Database
 from engine.document import Document
 from engine.query import QueryEngine
@@ -24,6 +24,11 @@ def restore_from_disk() -> None:
 
 
 restore_from_disk()
+
+
+@app.route("/")
+def index():
+    return render_template("index.html")
 
 
 # — Collections —

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NoSQL DB Explorer</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #0f1117;
+            color: #e0e0e0;
+            display: flex;
+            height: 100vh;
+        }
+
+        aside {
+            width: 240px;
+            background: #1a1d27;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            border-right: 1px solid #2a2d3a;
+        }
+
+        aside h2 {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #6c7293;
+            margin-bottom: 4px;
+        }
+
+        #collection-list { display: flex; flex-direction: column; gap: 6px; }
+
+        .col-item {
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            background: #22253a;
+            transition: background 0.2s;
+        }
+
+        .col-item:hover, .col-item.active {
+            background: #3a3f6b;
+            color: #fff;
+        }
+
+        .new-collection {
+            display: flex;
+            gap: 6px;
+            margin-top: auto;
+        }
+
+        .new-collection label {
+            display: none;
+        }
+
+        .new-collection input {
+            flex: 1;
+            padding: 7px 10px;
+            border-radius: 6px;
+            border: 1px solid #2a2d3a;
+            background: #22253a;
+            color: #e0e0e0;
+            font-size: 13px;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            gap: 16px;
+            overflow: hidden;
+        }
+
+        h1 { font-size: 18px; color: #a0a8d0; }
+
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        label.query-label {
+            display: block;
+            font-size: 12px;
+            color: #6c7293;
+            margin-bottom: 4px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #2a2d3a;
+            background: #1a1d27;
+            color: #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        button {
+            padding: 8px 18px;
+            border-radius: 6px;
+            border: none;
+            background: #3a3f6b;
+            color: #fff;
+            cursor: pointer;
+            font-size: 13px;
+            transition: background 0.2s;
+        }
+
+        button:hover { background: #4a50a0; }
+
+        button.danger { background: #6b3a3a; }
+        button.danger:hover { background: #a04a4a; }
+
+        #results {
+            flex: 1;
+            overflow-y: auto;
+            background: #1a1d27;
+            border-radius: 8px;
+            border: 1px solid #2a2d3a;
+            padding: 16px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        .tag {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: #22253a;
+            color: #6c7293;
+        }
+    </style>
+</head>
+<body>
+
+<aside>
+    <h2>Коллекции</h2>
+    <div id="collection-list"></div>
+    <div class="new-collection">
+        <label for="new-col-input">Новая коллекция</label>
+        <input id="new-col-input" placeholder="Название..." aria-label="Название новой коллекции" />
+        <button onclick="createCollection()">+</button>
+    </div>
+</aside>
+
+<main>
+    <h1>NoSQL DB Explorer <span class="tag" id="active-col">не выбрана</span></h1>
+
+    <div class="toolbar">
+        <button onclick="getDocs()">Все документы</button>
+        <button onclick="showQuery()">Запрос</button>
+        <button onclick="showAdd()">Добавить</button>
+        <button class="danger" onclick="dropCollection()">Удалить коллекцию</button>
+    </div>
+
+    <label for="input-area" class="query-label">JSON редактор</label>
+    <textarea id="input-area" placeholder="Введите JSON..."></textarea>
+
+    <div class="toolbar">
+        <button onclick="execute()">Выполнить</button>
+    </div>
+
+    <div id="results">Выберите коллекцию слева...</div>
+</main>
+
+<script>
+    let activeCollection = null;
+    let mode = 'docs';
+
+    async function api(method, url, body = null) {
+        const opts = { method, headers: { 'Content-Type': 'application/json' } };
+        if (body) opts.body = JSON.stringify(body);
+        const res = await fetch(url, opts);
+        return res.json();
+    }
+
+    function show(data) {
+        document.getElementById('results').textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function loadCollections() {
+        const data = await api('GET', '/db/collections');
+        const list = document.getElementById('collection-list');
+        list.innerHTML = '';
+        for (const name of data.collections || []) {
+            const el = document.createElement('div');
+            el.className = 'col-item';
+            el.textContent = name;
+            el.onclick = () => selectCollection(name, el);
+            list.appendChild(el);
+        }
+    }
+
+    function selectCollection(name, el) {
+        activeCollection = name;
+        document.querySelectorAll('.col-item').forEach(e => e.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('active-col').textContent = name;
+        void getDocs();
+    }
+
+    async function createCollection() {
+        const input = document.getElementById('new-col-input');
+        const name = input.value.trim();
+        if (!name) return;
+        await api('POST', '/db/collections', { name });
+        input.value = '';
+        await loadCollections();
+    }
+
+    async function dropCollection() {
+        if (!activeCollection) return;
+        if (!confirm(`Удалить коллекцию "${activeCollection}"?`)) return;
+        await api('DELETE', `/db/collections/${activeCollection}`);
+        activeCollection = null;
+        document.getElementById('active-col').textContent = 'не выбрана';
+        document.getElementById('results').textContent = 'Коллекция удалена.';
+        await loadCollections();
+    }
+
+    async function getDocs() {
+        if (!activeCollection) return;
+        mode = 'docs';
+        document.getElementById('input-area').value = '';
+        const data = await api('GET', `/db/${activeCollection}/documents`);
+        show(data);
+    }
+
+    function showQuery() {
+        mode = 'query';
+        document.getElementById('input-area').value = JSON.stringify({
+            query: { field: { contains: "value" } },
+            limit: 10
+        }, null, 2);
+    }
+
+    function showAdd() {
+        mode = 'add';
+        document.getElementById('input-area').value = JSON.stringify({
+            field1: "value1",
+            field2: "value2"
+        }, null, 2);
+    }
+
+    async function execute() {
+        if (!activeCollection) { show({ error: "Выберите коллекцию" }); return; }
+        const raw = document.getElementById('input-area').value.trim();
+
+        if (mode === 'docs') {
+            await getDocs();
+        } else if (mode === 'add') {
+            const body = raw ? JSON.parse(raw) : {};
+            const data = await api('POST', `/db/${activeCollection}/documents`, body);
+            show(data);
+            await getDocs();
+        } else if (mode === 'query') {
+            const body = raw ? JSON.parse(raw) : {};
+            const data = await api('POST', `/db/${activeCollection}/query`, body);
+            show(data);
+        }
+    }
+
+    void loadCollections();
+</script>
+
+</body>
+</html>
