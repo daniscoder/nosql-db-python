@@ -1,2 +1,24 @@
-# nosql-db-python
-Lightweight NoSQL database engine written in Python — supports JSON documents, indexing, and complex queries via Flask REST API
+# NoSQL Database in Python
+
+A lightweight document-oriented NoSQL database built from scratch in Python.
+
+## Stack
+- Python 3.11
+- Flask
+
+## Features
+- JSON document storage
+- Collections management
+- Query engine with filters
+- Global Secondary Indexes (GSI)
+- REST API
+- Web UI
+
+## Run locally
+```bash
+pip install -r requirements.txt
+python app.py
+```
+
+## Deploy
+Coming soon.
