@@ -8,6 +8,7 @@ def db():
     database = Database()
     database.create_collection("test")
     col = database.get_collection("test")
+    assert col is not None
     col.add({"title": "tolerate it", "genre": "pop", "year": 2020})
     col.add({"title": "my tears ricochet", "genre": "pop", "year": 2020})
     col.add({"title": "the bolter", "genre": "rock", "year": 2024})
@@ -26,12 +27,14 @@ def test_drop_collection(db):
 
 def test_add_and_get_document(db):
     col = db.get_collection("test")
+    assert col is not None
     docs = col.get_all()
     assert len(docs) == 3
 
 
 def test_get_document_by_uuid(db):
     col = db.get_collection("test")
+    assert col is not None
     uuid = col.add({"title": "new doc"})
     doc = col.get(uuid)
     assert doc is not None
@@ -40,14 +43,17 @@ def test_get_document_by_uuid(db):
 
 def test_update_document(db):
     col = db.get_collection("test")
+    assert col is not None
     uuid = col.add({"title": "old title"})
     col.update(uuid, {"title": "new title"})
     doc = col.get(uuid)
+    assert doc is not None
     assert doc["title"] == "new title"
 
 
 def test_delete_document(db):
     col = db.get_collection("test")
+    assert col is not None
     uuid = col.add({"title": "to delete"})
     col.delete(uuid)
     assert col.get(uuid) is None
@@ -55,6 +61,7 @@ def test_delete_document(db):
 
 def test_query_contains(db):
     col = db.get_collection("test")
+    assert col is not None
     engine = QueryEngine(col)
     results = engine.search({"title": {"contains": "tears"}})
     assert len(results) == 1
@@ -63,6 +70,7 @@ def test_query_contains(db):
 
 def test_query_eq(db):
     col = db.get_collection("test")
+    assert col is not None
     engine = QueryEngine(col)
     results = engine.search({"genre": {"eq": "rock"}})
     assert len(results) == 1
@@ -71,6 +79,7 @@ def test_query_eq(db):
 
 def test_query_starts_with(db):
     col = db.get_collection("test")
+    assert col is not None
     engine = QueryEngine(col)
     results = engine.search({"title": {"starts_with": "my"}})
     assert len(results) == 1
@@ -78,6 +87,7 @@ def test_query_starts_with(db):
 
 def test_query_gt(db):
     col = db.get_collection("test")
+    assert col is not None
     engine = QueryEngine(col)
     results = engine.search({"year": {"gt": 2020}})
     assert len(results) == 1
@@ -86,6 +96,7 @@ def test_query_gt(db):
 
 def test_query_and(db):
     col = db.get_collection("test")
+    assert col is not None
     engine = QueryEngine(col)
     results = engine.search({
         "and": [
@@ -99,6 +110,7 @@ def test_query_and(db):
 
 def test_query_or(db):
     col = db.get_collection("test")
+    assert col is not None
     engine = QueryEngine(col)
     results = engine.search({
         "or": [
@@ -111,6 +123,7 @@ def test_query_or(db):
 
 def test_query_limit(db):
     col = db.get_collection("test")
+    assert col is not None
     engine = QueryEngine(col)
     results = engine.search({"genre": {"eq": "pop"}}, limit=1)
     assert len(results) == 1
@@ -118,6 +131,7 @@ def test_query_limit(db):
 
 def test_query_sort_by(db):
     col = db.get_collection("test")
+    assert col is not None
     engine = QueryEngine(col)
     results = engine.search({"genre": {"eq": "pop"}}, sort_by="title")
     assert results[0]["title"] == "my tears ricochet"
