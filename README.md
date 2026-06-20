@@ -3,7 +3,7 @@
 A lightweight document-oriented NoSQL database built from scratch in Python.
 
 ## Stack
-- Python 3.11
+- Python 3.14
 - Flask
 
 ## Features
