@@ -317,8 +317,13 @@
     async function addDoc() {
         if (!activeCollection) { show({ error: "Выберите коллекцию" }); return; }
         const raw = document.getElementById('add-area').value.trim();
-        if (!raw) return;
-        const body = JSON.parse(raw);
+        if (!raw) { show({ error: "Введите JSON документ" }); return; }
+        let body;
+        try {
+            body = JSON.parse(raw);
+        } catch {
+            show({ error: "Некорректный JSON" }); return;
+        }
         const data = await api('POST', `/db/${activeCollection}/documents`, body);
         show(data);
         document.getElementById('add-area').value = '';
@@ -328,8 +333,13 @@
     async function runQuery() {
         if (!activeCollection) { show({ error: "Выберите коллекцию" }); return; }
         const raw = document.getElementById('query-area').value.trim();
-        if (!raw) return;
-        const body = JSON.parse(raw);
+        if (!raw) { show({ error: "Введите JSON запрос" }); return; }
+        let body;
+        try {
+            body = JSON.parse(raw);
+        } catch {
+            show({ error: "Некорректный JSON" }); return;
+        }
         const data = await api('POST', `/db/${activeCollection}/query`, body);
         show(data);
     }
