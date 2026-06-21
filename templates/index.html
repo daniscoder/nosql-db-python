@@ -60,8 +60,6 @@
         .new-collection {
             display: flex;
             gap: 6px;
-            padding-top: 12px;
-            border-top: 1px solid #2a2d3a;
             flex-shrink: 0;
         }
 
@@ -75,6 +73,26 @@
             background: #22253a;
             color: #e0e0e0;
             font-size: 13px;
+        }
+
+        .collections-header {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #6c7293;
+            padding-top: 12px;
+            border-top: 1px solid #2a2d3a;
+        }
+
+        .col-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .col-buttons button {
+            width: 100%;
         }
 
         main {
@@ -153,7 +171,6 @@
         button:hover { background: #4a50a0; }
         button.danger { background: #6b3a3a; }
         button.danger:hover { background: #a04a4a; }
-        button.sm { padding: 5px 12px; font-size: 12px; }
 
         .results-header {
             display: flex;
@@ -185,21 +202,24 @@
 <body>
 
 <aside>
-    <h2>Коллекции</h2>
-    <div id="collection-list"></div>
-    <div style="display:flex; flex-direction:column; gap:6px; flex-shrink:0;">
-        <button onclick="getDocs()" style="width:100%">Показать коллекцию</button>
-        <button class="danger" onclick="dropCollection()" style="width:100%">Удалить коллекцию</button>
-    </div>
+    <h2>Новая коллекция</h2>
     <div class="new-collection">
         <label for="new-col-input">Новая коллекция</label>
         <input id="new-col-input" placeholder="Название..." aria-label="Название новой коллекции" />
-        <button onclick="createCollection()">+</button>
+        <button id="btn-create">+</button>
+    </div>
+
+    <h2 class="collections-header">Коллекции</h2>
+    <div id="collection-list"></div>
+
+    <div class="col-buttons">
+        <button id="btn-show">Показать коллекцию</button>
+        <button id="btn-drop" class="danger">Удалить коллекцию</button>
     </div>
 </aside>
 
 <main>
-    <div class="topbar">
+    <div>
         <h1>NoSQL DB Explorer <span class="tag" id="active-col">не выбрана</span></h1>
     </div>
 
@@ -209,7 +229,7 @@
             <label for="add-area" style="display:none">Добавить документ JSON</label>
             <textarea id="add-area" placeholder='{"field": "value"}'></textarea>
             <div class="panel-footer">
-                <button onclick="addDoc()">Добавить</button>
+                <button id="btn-add">Добавить</button>
             </div>
         </div>
 
@@ -218,7 +238,7 @@
             <label for="query-area" style="display:none">JSON запрос</label>
             <textarea id="query-area" placeholder='{"query": {"field": {"contains": "value"}}, "limit": 10}'></textarea>
             <div class="panel-footer">
-                <button onclick="runQuery()">Выполнить запрос</button>
+                <button id="btn-query">Выполнить запрос</button>
             </div>
         </div>
     </div>
@@ -244,25 +264,26 @@
         document.getElementById('results').textContent = JSON.stringify(data, null, 2);
     }
 
-    async function loadCollections() {
-        const data = await api('GET', '/db/collections');
-        const list = document.getElementById('collection-list');
-        list.innerHTML = '';
-        for (const name of data.collections || []) {
-            const el = document.createElement('div');
-            el.className = 'col-item';
-            el.textContent = name;
-            el.onclick = () => selectCollection(name, el);
-            list.appendChild(el);
-        }
-    }
-
     function selectCollection(name, el) {
         activeCollection = name;
         document.querySelectorAll('.col-item').forEach(e => e.classList.remove('active'));
         el.classList.add('active');
         document.getElementById('active-col').textContent = name;
         void getDocs();
+    }
+
+    async function loadCollections() {
+        const data = await api('GET', '/db/collections');
+        const list = document.getElementById('collection-list');
+        list.innerHTML = '';
+        const collections = (data.collections || []).reverse();
+        for (const name of collections) {
+            const el = document.createElement('div');
+            el.className = 'col-item';
+            el.textContent = name;
+            el.addEventListener('click', () => selectCollection(name, el));
+            list.prepend(el);
+        }
     }
 
     async function createCollection() {
@@ -272,6 +293,9 @@
         await api('POST', '/db/collections', { name });
         input.value = '';
         await loadCollections();
+        const list = document.getElementById('collection-list');
+        const first = list.firstElementChild;
+        if (first) selectCollection(name, first);
     }
 
     async function dropCollection() {
@@ -310,7 +334,19 @@
         show(data);
     }
 
-    void loadCollections();
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('btn-create').addEventListener('click', createCollection);
+        document.getElementById('btn-show').addEventListener('click', getDocs);
+        document.getElementById('btn-drop').addEventListener('click', dropCollection);
+        document.getElementById('btn-add').addEventListener('click', addDoc);
+        document.getElementById('btn-query').addEventListener('click', runQuery);
+
+        document.getElementById('new-col-input').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') void createCollection();
+        });
+
+        void loadCollections();
+    });
 </script>
 
 </body>
