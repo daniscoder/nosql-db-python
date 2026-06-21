@@ -1,4 +1,4 @@
-# NoSQL База данных на Python
+# NoSQL Database in Python
 
 [![Maintainability](https://qlty.sh/gh/daniscoder/projects/nosql-db-python/maintainability.svg)](https://qlty.sh/gh/daniscoder/projects/nosql-db-python)
 
