@@ -7,3 +7,4 @@ venv/
 data/*.json
 !data/films.json
 !data/books.json
+!data/language.json

@@ -1,0 +1,58 @@
+{
+  "1": {
+    "name": "Python",
+    "paradigm": "multi-paradigm",
+    "typing": "dynamic",
+    "year": 1991,
+    "creator": "Rossum",
+    "popular": true
+  },
+  "2": {
+    "name": "JavaScript",
+    "paradigm": "multi-paradigm",
+    "typing": "dynamic",
+    "year": 1995,
+    "creator": "Eich",
+    "popular": true
+  },
+  "3": {
+    "name": "Rust",
+    "paradigm": "multi-paradigm",
+    "typing": "static",
+    "year": 2010,
+    "creator": "Hoare",
+    "popular": false
+  },
+  "4": {
+    "name": "Go",
+    "paradigm": "concurrent",
+    "typing": "static",
+    "year": 2009,
+    "creator": "Pike",
+    "popular": true
+  },
+  "5": {
+    "name": "TypeScript",
+    "paradigm": "multi-paradigm",
+    "typing": "static",
+    "year": 2012,
+    "creator": "Hejlsberg",
+    "popular": true
+  },
+  "6": {
+    "name": "Kotlin",
+    "paradigm": "multi-paradigm",
+    "typing": "static",
+    "year": 2011,
+    "creator": "JetBrains",
+    "popular": false
+  },
+  "7": {
+    "name": "Swift",
+    "paradigm": "multi-paradigm",
+    "typing": "static",
+    "year": 2014,
+    "creator": "Lattner",
+    "popular": false
+  }
+}
