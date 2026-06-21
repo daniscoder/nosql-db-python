@@ -72,6 +72,10 @@ The app uses a local JSON storage layer. Two default collections (`films` and `b
 
 > **Note:** On Render's free plan, the filesystem is ephemeral — any collections created or modified at runtime will be lost on restart. The default collections are always restored from the repository.
 
+## Demo
+
+![Demo](assets/demo.gif)
+
 ## Deploy
 
 https://nosql-db-python.onrender.com
