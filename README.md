@@ -1,50 +1,70 @@
-# NoSQL Database in Python
+# NoSQL База данных на Python
 
 [![Maintainability](https://qlty.sh/gh/daniscoder/projects/nosql-db-python/maintainability.svg)](https://qlty.sh/gh/daniscoder/projects/nosql-db-python)
 
-A lightweight document-oriented NoSQL database built from scratch in Python.
-Stores JSON documents, supports indexing and complex queries via REST API and Web UI.
+Лёгкая документо-ориентированная NoSQL база данных, написанная на Python с нуля.
+Хранит JSON-документы, поддерживает индексирование и сложные запросы через REST API и веб-интерфейс.
 
-## Stack
+## Стек технологий
 
 - Python 3.14
 - Flask 3.1.3
 - ujson
 - pytest
 
-## Features
+## Возможности
 
-- JSON document storage
-- Collections management
-- Query engine with filters: `eq`, `contains`, `starts_with`, `ends_with`, `gt`, `lt`
-- Compound queries with `and` / `or` operators (including nested)
-- Global Secondary Indexes (GSI)
-- REST API (10 endpoints)
-- Web UI — collection explorer with query console
-- Unit tests (14 tests)
+- Хранение документов в формате JSON
+- Управление коллекциями
+- Движок запросов с фильтрами: `eq`, `contains`, `starts_with`, `ends_with`, `gt`, `lt`
+- Составные запросы с операторами `and` / `or` (включая вложенные)
+- Глобальные вторичные индексы (GSI)
+- REST API (10 эндпоинтов)
+- Веб-интерфейс — обозреватель коллекций с консолью запросов
+- Юнит-тесты (14 тестов)
 
-## Project structure
+## Архитектура
+
+### Общая архитектурная схема
+![Архитектура](assets/architecture.png)
+
+### Модель данных (ERD)
+![ERD](assets/erd.png)
+
+### Use Case диаграмма
+![Use Case](assets/usecase.png)
+
+## Структура проекта
 
 ```
 nosql-db-python/
+├── assets/
+│   ├── architecture.png  # Архитектурная схема
+│   ├── erd.png           # Модель данных (ERD)
+│   ├── usecase.png       # Use Case диаграмма
+│   └── demo.gif          # Демонстрация
+├── data/
+│   ├── books.json        # Тестовые данные
+│   ├── films.json        # Тестовые данные
+│   └── language.json     # Тестовые данные
 ├── engine/
-│   ├── collection.py   # Collection management
-│   ├── database.py     # Database class
-│   ├── document.py     # Document model
-│   ├── index.py        # GSI index
-│   └── query.py        # Query engine
+│   ├── collection.py     # Управление коллекциями
+│   ├── database.py       # Класс базы данных
+│   ├── document.py       # Модель документа
+│   ├── index.py          # GSI индекс
+│   └── query.py          # Движок запросов
 ├── storage/
-│   └── json_store.py   # JSON persistence layer
+│   └── json_store.py     # Слой хранения JSON
 ├── templates/
-│   └── index.html      # Web UI
+│   └── index.html        # Веб-интерфейс
 ├── tests/
-│   └── test_engine.py  # Unit tests
-├── app.py              # Flask REST API
-├── Procfile            # Render deploy config
+│   └── test_engine.py    # Юнит-тесты
+├── app.py                # Flask REST API
+├── Procfile              # Конфигурация деплоя Render
 └── requirements.txt
 ```
 
-## Run locally
+## Запуск локально
 
 ```bash
 pip install -r requirements.txt
@@ -53,30 +73,30 @@ python app.py
 
 ## API
 
-| Method | URL                      | Description          |
-|--------|--------------------------|----------------------|
-| GET    | /db/collections          | List collections     |
-| POST   | /db/collections          | Create collection    |
-| DELETE | /db/collections/{name}   | Drop collection      |
-| POST   | /db/{col}/documents      | Add document         |
-| GET    | /db/{col}/documents      | Get all documents    |
-| GET    | /db/{col}/documents/{id} | Get document by UUID |
-| PUT    | /db/{col}/documents/{id} | Update document      |
-| DELETE | /db/{col}/documents/{id} | Delete document      |
-| POST   | /db/{col}/query          | Query with filters   |
-| POST   | /db/{col}/index          | Create index         |
+| Метод  | URL                      | Описание                    |
+|--------|--------------------------|-----------------------------|
+| GET    | /db/collections          | Список коллекций            |
+| POST   | /db/collections          | Создать коллекцию           |
+| DELETE | /db/collections/{name}   | Удалить коллекцию           |
+| POST   | /db/{col}/documents      | Добавить документ           |
+| GET    | /db/{col}/documents      | Все документы коллекции     |
+| GET    | /db/{col}/documents/{id} | Найти документ по UUID      |
+| PUT    | /db/{col}/documents/{id} | Обновить документ           |
+| DELETE | /db/{col}/documents/{id} | Удалить документ            |
+| POST   | /db/{col}/query          | Запрос с фильтрами          |
+| POST   | /db/{col}/index          | Создать индекс              |
 
-## Data persistence
+## Хранение данных
 
-The app uses a local JSON storage layer. Two default collections (`films` and `books`) are included in the repository and loaded automatically on startup.
+Приложение использует слой хранения на основе JSON-файлов. Три коллекции по умолчанию (`films`, `books` и `language`) включены в репозиторий и загружаются автоматически при запуске.
 
-> **Note:** On Render's free plan, the filesystem is ephemeral — any collections created or modified at runtime will be lost on restart. The default collections are always restored from the repository.
+> **Примечание:** На бесплатном плане Render файловая система эфемерна — коллекции, созданные или изменённые во время работы, будут удалены при перезапуске. Коллекции по умолчанию всегда восстанавливаются из репозитория.
 
-## Demo
+## Демонстрация
 
-![Demo](assets/demo.gif)
+![Демо](assets/demo.gif)
 
-## Examples
+## Примеры запросов
 
 **Добавить документ** — POST `/db/{col}/documents`:
 ```json
@@ -135,12 +155,11 @@ The app uses a local JSON storage layer. Two default collections (`films` and `b
 }
 ```
 
-## Deploy
+## Деплой
 
 https://nosql-db-python.onrender.com
 
-## Source
+## Источники
 
-Based on:
-- Tutorial: https://jamesg.blog/2024/08/19/nosql-database-python
-- Catalog: https://github.com/practical-tutorials/project-based-learning
+- Туториал: https://jamesg.blog/2024/08/19/nosql-database-python
+- Каталог: https://github.com/practical-tutorials/project-based-learning
