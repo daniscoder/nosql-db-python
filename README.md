@@ -66,6 +66,12 @@ python app.py
 | POST   | /db/{col}/query          | Query with filters   |
 | POST   | /db/{col}/index          | Create index         |
 
+## Data persistence
+
+The app uses a local JSON storage layer. Two default collections (`films` and `books`) are included in the repository and loaded automatically on startup.
+
+> **Note:** On Render's free plan, the filesystem is ephemeral — any collections created or modified at runtime will be lost on restart. The default collections are always restored from the repository.
+
 ## Deploy
 
 https://nosql-db-python.onrender.com
