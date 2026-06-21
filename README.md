@@ -76,6 +76,65 @@ The app uses a local JSON storage layer. Two default collections (`films` and `b
 
 ![Demo](assets/demo.gif)
 
+## Examples
+
+**Добавить документ** — POST `/db/{col}/documents`:
+```json
+{
+  "name": "Python",
+  "typing": "dynamic",
+  "year": 1991,
+  "popular": true
+}
+```
+
+**Простой запрос** — POST `/db/{col}/query`:
+```json
+{
+  "query": {"typing": {"eq": "static"}},
+  "limit": 10
+}
+```
+
+**Запрос contains с сортировкой**:
+```json
+{
+  "query": {"name": {"contains": "Script"}},
+  "limit": 10,
+  "sort_by": "year"
+}
+```
+
+**Составной запрос and**:
+```json
+{
+  "query": {
+    "and": [
+      {"typing": {"eq": "static"}},
+      {"year": {"gt": 2010}}
+    ]
+  },
+  "sort_by": "year"
+}
+```
+
+**Вложенный запрос or/and**:
+```json
+{
+  "query": {
+    "or": [
+      {
+        "and": [
+          {"typing": {"eq": "static"}},
+          {"popular": {"eq": "true"}}
+        ]
+      },
+      {"year": {"lt": 2000}}
+    ]
+  }
+}
+```
+
 ## Deploy
 
 https://nosql-db-python.onrender.com
