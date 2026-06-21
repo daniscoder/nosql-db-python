@@ -1,0 +1,37 @@
+{
+  "1": {
+    "title": "Clean Code",
+    "author": "Martin",
+    "genre": "programming",
+    "year": 2008,
+    "pages": 431
+  },
+  "2": {
+    "title": "The Pragmatic Programmer",
+    "author": "Hunt",
+    "genre": "programming",
+    "year": 1999,
+    "pages": 352
+  },
+  "3": {
+    "title": "Design Patterns",
+    "author": "Gang of Four",
+    "genre": "programming",
+    "year": 1994,
+    "pages": 395
+  },
+  "4": {
+    "title": "Dune",
+    "author": "Herbert",
+    "genre": "sci-fi",
+    "year": 1965,
+    "pages": 412
+  },
+  "5": {
+    "title": "1984",
+    "author": "Orwell",
+    "genre": "dystopia",
+    "year": 1949,
+    "pages": 328
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "1": {
+    "title": "Inception",
+    "director": "Nolan",
+    "genre": "sci-fi",
+    "year": 2010,
+    "rating": 8.8
+  },
+  "2": {
+    "title": "Interstellar",
+    "director": "Nolan",
+    "genre": "sci-fi",
+    "year": 2014,
+    "rating": 8.6
+  },
+  "3": {
+    "title": "The Dark Knight",
+    "director": "Nolan",
+    "genre": "action",
+    "year": 2008,
+    "rating": 9.0
+  },
+  "4": {
+    "title": "Parasite",
+    "director": "Bong",
+    "genre": "thriller",
+    "year": 2019,
+    "rating": 8.5
+  },
+  "5": {
+    "title": "Dune",
+    "director": "Villeneuve",
+    "genre": "sci-fi",
+    "year": 2021,
+    "rating": 8.0
+  }
+}

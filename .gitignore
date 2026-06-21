@@ -4,4 +4,6 @@ __pycache__/
 venv/
 .idea/
 *.json
-data/
+data/*.json
+!data/films.json
+!data/books.json
